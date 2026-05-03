@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Colmeia</title>
+
+    <!-- Tailwind CSS via CDN para o visual -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="dicionario.js"></script>
+
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            /* Safe area for notched phones */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* Larger tap targets on mobile */
+        button {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            75% {
+                transform: translateX(6px);
+            }
+        }
+
+        .animate-shake {
+            animation: shake 0.25s ease-in-out 2;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .fade-out-scale {
+            opacity: 0;
+            transform: scale(0.75);
+        }
+
+        .circle-btn {
+            transition: all 0.3s ease;
+        }
+
+        /* Hexagon Shape */
+        .hex {
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            transition: all 0.15s ease-in-out;
+        }
+
+        .hex-bg {
+            filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+        }
+
+        /* Modal Animations */
+        @keyframes modal-backdrop-in {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes modal-content-in {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .animate-modal-backdrop {
+            animation: modal-backdrop-in 0.3s ease-out forwards;
+        }
+
+        .animate-modal-content {
+            animation: modal-content-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* ---- Screen slide transitions ---- */
+        @keyframes slide-in-from-right {
+            from {
+                opacity: 0;
+                transform: translateX(48px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slide-out-to-left {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(-48px);
+            }
+        }
+
+        @keyframes slide-in-from-left {
+            from {
+                opacity: 0;
+                transform: translateX(-48px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slide-out-to-right {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateX(48px);
+            }
+        }
+
+        @keyframes slide-down-in {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+                max-height: 0;
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 200px;
+            }
+        }
+
+        .anim-slide-in-right {
+            animation: slide-in-from-right 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .anim-slide-out-left {
+            animation: slide-out-to-left 0.22s ease-in forwards;
+        }
+
+        .anim-slide-in-left {
+            animation: slide-in-from-left 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .anim-slide-out-right {
+            animation: slide-out-to-right 0.22s ease-in forwards;
+        }
+
+        .anim-slide-down {
+            animation: slide-down-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            overflow: hidden;
+        }
+
+        /* ---- Collapse slide up ---- */
+        @keyframes slide-up-out {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+                max-height: 200px;
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-8px);
+                max-height: 0;
+            }
+        }
+
+        .anim-slide-up {
+            animation: slide-up-out 0.22s ease-in forwards;
+            overflow: hidden;
+        }
+
+        /* ---- Ambient background blobs ---- */
+        @keyframes blob1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            40% {
+                transform: translate(28px, -36px) scale(1.08);
+            }
+
+            70% {
+                transform: translate(-18px, 20px) scale(0.94);
+            }
+        }
+
+        @keyframes blob2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            35% {
+                transform: translate(-32px, 28px) scale(0.92);
+            }
+
+            70% {
+                transform: translate(22px, -18px) scale(1.06);
+            }
+        }
+
+        @keyframes blob3 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(18px, 28px) scale(1.1);
+            }
+        }
+
+        /* ========== MODO ESCURO ========== */
+        html.dark body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+
+        html.dark #menu-screen {
+            background-image: linear-gradient(135deg, #0f172a, #1e293b) !important;
+        }
+
+        html.dark #menu-screen h1 {
+            color: #f1f5f9;
+        }
+
+        html.dark #menu-screen>div:not([aria-hidden]) p {
+            color: #94a3b8;
+        }
+
+        html.dark #menu-screen .bg-white {
+            background-color: #1e293b !important;
+            border-color: #475569 !important;
+            color: #e2e8f0 !important;
+        }
+
+        html.dark #menu-screen .border-slate-200 {
+            border-color: #475569 !important;
+        }
+
+        html.dark header {
+            background-color: rgba(15, 23, 42, 0.95) !important;
+            border-bottom-color: #334155 !important;
+        }
+
+        html.dark header h1 {
+            color: #f1f5f9 !important;
+        }
+
+        html.dark header span:not(.text-amber-500) {
+            color: #64748b !important;
+        }
+
+        html.dark header button {
+            background-color: #334155 !important;
+            color: #94a3b8 !important;
+        }
+
+        html.dark #rank-display,
+        html.dark #rank-display-mobile {
+            color: #fbbf24 !important;
+        }
+
+        html.dark #score-display,
+        html.dark #score-display-mobile {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .h-2.bg-slate-200 {
+            background-color: #334155 !important;
+        }
+
+        html.dark .hex:not([class*='amber']) {
+            background-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .bg-white.rounded-2xl {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+
+        html.dark #btn-shuffle {
+            color: #64748b !important;
+        }
+
+        html.dark #btn-shuffle:hover {
+            background-color: rgba(251, 191, 36, 0.1) !important;
+            color: #fbbf24 !important;
+        }
+
+        html.dark .text-slate-600 {
+            color: #94a3b8 !important;
+        }
+
+        html.dark .text-slate-800 {
+            color: #e2e8f0 !important;
+        }
+
+        html.dark .text-slate-700 {
+            color: #cbd5e1 !important;
+        }
+
+        html.dark .text-slate-500 {
+            color: #94a3b8 !important;
+        }
+
+        html.dark .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        html.dark .text-slate-300 {
+            color: #475569 !important;
+        }
+
+        html.dark .bg-white.rounded-3xl {
+            background-color: #1e293b !important;
+            border-color: #334155 !important;
+        }
+
+        html.dark .bg-slate-50 {
+            background-color: #0f172a !important;
+        }
+
+        html.dark .border-slate-200 {
+            border-color: #334155 !important;
+        }
+
+        html.dark .border-slate-100 {
+            border-color: #1e293b !important;
+        }
+
+        html.dark #word-list-container>div {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+        }
+
+        html.dark #word-list-container .bg-amber-100 {
+            background-color: rgba(251, 191, 36, 0.15) !important;
+        }
+
+        html.dark #word-list-container .text-amber-800 {
+            color: #fbbf24 !important;
+        }
+
+        html.dark #word-list-container .bg-slate-100 {
+            background-color: #334155 !important;
+        }
+
+        html.dark #word-list-container .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        html.dark #word-list-container .bg-slate-800 {
+            background-color: #475569 !important;
+            border-color: #475569 !important;
+        }
+
+        html.dark #word-list-container .bg-slate-50 {
+            background-color: #334155 !important;
+        }
+
+        html.dark #word-list-container .border-dashed {
+            border-color: #475569 !important;
+        }
+
+        html.dark #confirm-modal .bg-white,
+        html.dark #victory-modal .bg-white,
+        html.dark #rules-modal .bg-white {
+            background-color: #1e293b !important;
+        }
+
+        html.dark #confirm-modal .bg-slate-100,
+        html.dark #rules-modal .bg-slate-100 {
+            background-color: #334155 !important;
+            color: #e2e8f0 !important;
+        }
+
+        html.dark #victory-modal .bg-slate-50 {
+            background-color: #0f172a !important;
+            border-color: #334155 !important;
+        }
+
+        html.dark #victory-modal .text-slate-400 {
+            color: #64748b !important;
+        }
+
+        html.dark footer p {
+            color: #334155 !important;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 select-none">
+
+    <!-- Tela de Menu Inicial -->
+    <div id="menu-screen"
+        class="hidden relative overflow-hidden min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-50 to-slate-100">
+
+        <!-- Fundo animado do menu -->
+        <div aria-hidden="true" class="absolute inset-0 pointer-events-none">
+            <div style="animation: blob1 9s ease-in-out infinite;"
+                class="absolute top-[-8%] left-[-10%] w-80 h-80 bg-amber-300 rounded-full opacity-25 blur-3xl"></div>
+            <div style="animation: blob2 11s ease-in-out infinite;"
+                class="absolute bottom-[5%] right-[-8%] w-72 h-72 bg-amber-400 rounded-full opacity-20 blur-3xl"></div>
+            <div style="animation: blob3 7s ease-in-out infinite;"
+                class="absolute top-[45%] right-[15%] w-56 h-56 bg-slate-300 rounded-full opacity-10 blur-3xl"></div>
+            <div style="animation: blob1 12s ease-in-out infinite 2s;"
+                class="absolute bottom-[-5%] left-[15%] w-64 h-64 bg-amber-200 rounded-full opacity-20 blur-3xl"></div>
+        </div>
+
+        <div class="mb-10 text-center">
+            <div class="flex items-center justify-center gap-3 mb-2">
+                <h1 class="text-5xl font-black text-slate-800">COLMEIA</h1>
+            </div>
+            <p class="text-slate-500 font-medium">Você consegue se tornar a Abelha Rainha?</p>
+        </div>
+
+        <div class="w-full max-w-sm flex flex-col gap-4">
+            <button onclick="startGame('classic')"
+                class="w-full py-5 bg-amber-400 text-amber-950 rounded-2xl font-black text-xl shadow-lg shadow-amber-400/30 hover:bg-amber-500 active:scale-95 transition-all">
+                Jogo Clássico
+            </button>
+
+            <div class="relative">
+                <button onclick="toggleThemeMenu()"
+                    class="w-full py-5 bg-slate-800 text-white rounded-2xl font-black text-xl shadow-lg hover:bg-slate-700 active:scale-95 transition-all flex items-center justify-center gap-2">
+                    Jogos Temáticos
+                    <svg id="theme-chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                        stroke-linejoin="round" class="transition-transform">
+                        <path d="m6 9 6 6 6-6" />
+                    </svg>
+                </button>
+                <div id="theme-menu" class="hidden flex flex-col gap-3 mt-3">
+                    <button onclick="startGame('pokemon')"
+                        class="w-full py-4 bg-white border-2 border-slate-200 text-slate-800 rounded-2xl font-bold text-lg hover:border-amber-400 hover:bg-amber-50 active:scale-95 transition-all">
+                        ⚡ Pokémon
+                    </button>
+                    <button onclick="startGame('harrypotter')"
+                        class="w-full py-4 bg-white border-2 border-slate-200 text-slate-800 rounded-2xl font-bold text-lg hover:border-amber-400 hover:bg-amber-50 active:scale-95 transition-all">
+                        ⚗️ Harry Potter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela de Carregamento -->
+    <div id="loading-screen" class="min-h-screen flex flex-col items-center justify-center pb-10 gap-4">
+        <svg class="w-12 h-12 text-amber-500 animate-spin" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+        </svg>
+        <p class="text-slate-600 font-bold text-lg animate-pulse">Prepararando a colmeia...</p>
+    </div>
+
+    <!-- Tela de Erro -->
+    <div id="error-screen" class="hidden min-h-screen flex items-center justify-center">
+        <div class="p-10 text-center font-bold text-red-500">Erro ao carregar Engine...</div>
+    </div>
+
+    <!-- Tela Principal do Jogo -->
+    <div id="app-content" class="hidden min-h-screen flex flex-col items-center">
+        <header class="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md shadow-sm border-b border-slate-200">
+
+            <!-- Layout Mobile: voltar | título central | novo+regras -->
+            <div class="flex sm:hidden items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <button onclick="goToMenu()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg active:scale-90 transition-all"
+                        title="Voltar ao Menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button id="theme-toggle-mobile" onclick="toggleTheme()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg active:scale-90 transition-all"
+                        title="Alternar modo escuro">
+                        <svg id="icon-sun-mobile" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4" />
+                            <path
+                                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                        </svg>
+                        <svg id="icon-moon-mobile" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-col items-center">
+                    <h1 class="text-lg font-black text-slate-800 leading-none flex items-center gap-1">
+                        Colmeia
+                    </h1>
+                    <span id="mode-label"
+                        class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Clássico</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="handleNewGame()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg active:scale-90 transition-all"
+                        title="Novo Jogo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                    </button>
+                    <button onclick="openRulesModal()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg active:scale-90 transition-all"
+                        title="Regras">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Layout Desktop: esquerda | direita -->
+            <div class="hidden sm:flex items-center justify-between px-4 py-3">
+                <div class="flex items-center gap-2">
+                    <button onclick="goToMenu()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 hover:text-slate-800 transition-all active:scale-90"
+                        title="Voltar ao Menu">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m15 18-6-6 6-6" />
+                        </svg>
+                    </button>
+                    <button id="theme-toggle-desktop" onclick="toggleTheme()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 hover:text-slate-800 transition-all active:scale-90"
+                        title="Alternar modo escuro">
+                        <svg id="icon-sun-desktop" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4" />
+                            <path
+                                d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                        </svg>
+                        <svg id="icon-moon-desktop" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                            stroke-linecap="round" stroke-linejoin="round" class="hidden">
+                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                        </svg>
+                    </button>
+                    <div class="flex flex-col">
+                        <h1 class="text-lg font-black text-slate-800 leading-none flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-amber-500">
+                                <path d="M12 22V12" />
+                                <path d="M6 12 12 2l6 10" />
+                                <path d="M6 12v10l6-10" />
+                            </svg>
+                            Colmeia
+                        </h1>
+                        <span id="mode-label-desktop"
+                            class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Clássico</span>
+                    </div>
+                    <button onclick="handleNewGame()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 hover:text-slate-800 transition-all active:scale-90"
+                        title="Novo Jogo">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                            <path d="M3 3v5h5" />
+                        </svg>
+                    </button>
+                    <button onclick="openRulesModal()"
+                        class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-lg hover:bg-slate-200 hover:text-slate-800 transition-all active:scale-90"
+                        title="Regras">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex flex-col items-end">
+                    <div id="rank-display"
+                        class="text-amber-500 text-xs uppercase tracking-wider font-black mb-1 transition-all">Iniciante
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <div class="w-32 h-2 bg-slate-200 rounded-full overflow-hidden">
+                            <div id="progress-bar-fill"
+                                class="h-full bg-amber-400 rounded-full transition-all duration-500 w-0"></div>
+                        </div>
+                        <div id="score-display" class="text-2xl font-black text-slate-700 leading-none">0</div>
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
+        <main class="relative w-full max-w-3xl flex flex-col items-center px-4 mt-2">
+
+            <!-- Fundo animado do jogo (muito sutil) -->
+            <div aria-hidden="true" class="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+                <div style="animation: blob1 13s ease-in-out infinite 1s;"
+                    class="absolute top-[-15%] right-[-10%] w-96 h-96 bg-amber-200 rounded-full opacity-10 blur-3xl">
+                </div>
+                <div style="animation: blob2 15s ease-in-out infinite;"
+                    class="absolute bottom-[0%] left-[-10%] w-80 h-80 bg-amber-100 rounded-full opacity-10 blur-3xl">
+                </div>
+            </div>
+
+            <!-- Mensagem Flutuante -->
+            <div class="h-10 mb-2 flex items-center justify-center z-40">
+                <span id="toast-message"
+                    class="hidden px-6 py-2 rounded-full text-sm font-bold shadow-lg transition-all animate-bounce text-white">
+                </span>
+            </div>
+
+            <!-- Input Display -->
+            <div id="input-container"
+                class="h-16 mb-4 flex items-center justify-center text-3xl sm:text-4xl font-black tracking-widest uppercase">
+                <!-- Renderizado pelo JS -->
+            </div>
+
+            <!-- Circular Grid (Colmeia Hexagonal) -->
+            <div class="flex flex-col items-center mb-8 pt-4">
+                <div class="flex gap-[4px] sm:gap-[6px] z-10 hex-bg">
+                    <button id="btn-surround-0"
+                        class="hex bg-slate-200 text-slate-800 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-slate-300 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                    <button id="btn-surround-1"
+                        class="hex bg-slate-200 text-slate-800 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-slate-300 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                </div>
+                <div class="flex gap-[4px] sm:gap-[6px] -mt-[18px] sm:-mt-[21px] z-20 hex-bg">
+                    <button id="btn-surround-2"
+                        class="hex bg-slate-200 text-slate-800 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-slate-300 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                    <button id="btn-center"
+                        class="hex bg-amber-400 text-amber-950 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-amber-500 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                    <button id="btn-surround-3"
+                        class="hex bg-slate-200 text-slate-800 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-slate-300 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                </div>
+                <div class="flex gap-[4px] sm:gap-[6px] -mt-[18px] sm:-mt-[21px] z-10 hex-bg">
+                    <button id="btn-surround-4"
+                        class="hex bg-slate-200 text-slate-800 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-slate-300 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                    <button id="btn-surround-5"
+                        class="hex bg-slate-200 text-slate-800 w-[75px] h-[86px] sm:w-[90px] sm:h-[104px] flex items-center justify-center text-2xl sm:text-3xl font-extrabold active:scale-95 hover:bg-slate-300 focus:outline-none"
+                        onclick="handleTap(this.innerText)"></button>
+                </div>
+            </div>
+
+            <!-- Controles -->
+            <div class="flex w-full max-w-md justify-between gap-3 mb-6">
+                <button onclick="handleDelete()"
+                    class="flex-1 py-5 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 active:scale-95 touch-manipulation font-bold gap-2 transition-transform">
+                    <span class="hidden sm:inline">Apagar</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="w-6 h-6 sm:hidden">
+                        <path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z" />
+                        <line x1="18" x2="12" y1="9" y2="15" />
+                        <line x1="12" x2="18" y1="9" y2="15" />
+                    </svg>
+                </button>
+                <button id="btn-shuffle" onclick="handleShuffle()"
+                    class="w-16 flex-shrink-0 bg-white rounded-2xl shadow-sm border border-slate-200 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:bg-amber-50 active:scale-95 touch-manipulation transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="w-6 h-6">
+                        <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
+                        <path d="m18 2 4 4-4 4" />
+                        <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" />
+                        <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" />
+                        <path d="m18 14 4 4-4 4" />
+                    </svg>
+                </button>
+                <button onclick="validateWord()"
+                    class="flex-1 py-5 bg-amber-400 rounded-2xl shadow-sm border border-amber-400 flex items-center justify-center text-amber-950 hover:bg-amber-500 active:scale-95 touch-manipulation font-black text-lg gap-2 transition-transform">
+                    Enviar
+                </button>
+            </div>
+
+            <!-- Barra de Progresso Mobile (apenas mobile) -->
+            <div
+                class="sm:hidden w-full max-w-md mb-5 bg-white rounded-2xl shadow-sm border border-slate-200 px-5 py-3 flex items-center gap-3">
+                <div id="rank-display-mobile"
+                    class="text-amber-500 text-[10px] uppercase tracking-wider font-black whitespace-nowrap">Iniciante
+                </div>
+                <div class="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill-mobile"
+                        class="h-full bg-amber-400 rounded-full transition-all duration-500 w-0"></div>
+                </div>
+                <div id="score-display-mobile" class="text-lg font-black text-slate-700 leading-none">0</div>
+            </div>
+
+            <!-- Caixas de Palavras -->
+            <div class="w-full bg-white rounded-3xl shadow-sm border border-slate-200 p-4 sm:p-6 mb-8">
+                <div
+                    class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-4 mb-6 border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-xl font-extrabold text-slate-800">Encontradas</h2>
+                    </div>
+                    <div
+                        class="bg-slate-50 px-4 py-2 rounded-xl text-slate-500 font-bold text-sm flex items-center gap-2 border border-slate-200">
+                        Total: <span id="progress-count" class="text-slate-800 text-lg">0</span> / <span
+                            id="total-words-count">0</span>
+                    </div>
+                </div>
+
+                <div id="word-list-container" class="flex flex-col gap-6">
+                    <!-- Renderizado pelo JS -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="w-full mt-4 pb-6 flex justify-center">
+            <p class="text-[10px] text-slate-300 font-bold uppercase tracking-widest select-none">Desenvolvido por
+                Amálgama Softworks</p>
+        </footer>
+
+    </div>
+
+    <!-- Modal de Regras -->
+    <div id="rules-modal" class="hidden fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-slate-900/50 backdrop-blur-sm animate-modal-backdrop"
+            onclick="closeRulesModal()"></div>
+        <div
+            class="relative bg-white rounded-t-[32px] sm:rounded-[32px] shadow-2xl p-6 w-full sm:max-w-md animate-modal-content max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="text-2xl font-black text-slate-800">Como jogar</h3>
+                <button onclick="closeRulesModal()"
+                    class="w-10 h-10 flex items-center justify-center bg-slate-100 text-slate-500 rounded-xl hover:bg-slate-200 active:scale-90 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex flex-col gap-4 text-slate-600 font-medium leading-relaxed">
+                <div class="flex gap-3 items-start">
+                    <span class="text-2xl mt-0.5"></span>
+                    <p>Forme palavras usando as letras dos hexágonos. <strong class="text-slate-800">A letra central
+                            (amarela) deve estar em todas as palavras.</strong></p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span class="text-2xl mt-0.5"></span>
+                    <p id="rules-min-length">As palavras devem ter no mínimo <strong class="text-slate-800">4
+                            letras</strong>.</p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span class="text-2xl mt-0.5"></span>
+                    <p>Palavras que usam <strong class="text-slate-800">todas as 7 letras</strong> são <strong
+                            class="text-amber-600">Pangramas</strong> e valem pontos extras!</p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span class="text-2xl mt-0.5"></span>
+                    <p>Palavras de 4 letras valem <strong class="text-slate-800">1 ponto</strong>. Palavras maiores
+                        valem 1 ponto por letra. Pangramas ganham +7 pontos bônus.</p>
+                </div>
+                <div class="flex gap-3 items-start">
+                    <span class="text-2xl mt-0.5"></span>
+                    <p>Use o botão de embaralhar para reorganizar as letras e encontrar novas combinações.</p>
+                </div>
+            </div>
+            <button onclick="closeRulesModal()"
+                class="w-full mt-6 py-4 bg-amber-400 text-amber-950 rounded-2xl font-black text-lg hover:bg-amber-500 active:scale-95 transition-all">Entendi!</button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm animate-modal-backdrop"
+            onclick="closeConfirmModal()"></div>
+        <div class="relative bg-white rounded-[32px] shadow-2xl p-8 max-w-sm w-full text-center animate-modal-content">
+            <div
+                class="w-16 h-16 bg-amber-100 text-amber-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                </svg>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 mb-2">Novo Jogo?</h3>
+            <p class="text-slate-500 mb-8 font-medium leading-relaxed">Deseja abandonar este jogo e gerar um novo
+                desafio aleatório?</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()"
+                    class="flex-1 py-3 px-4 bg-slate-100 text-slate-600 rounded-xl font-bold hover:bg-slate-200 transition-colors">Cancelar</button>
+                <button onclick="executeNewGame()"
+                    class="flex-1 py-3 px-4 bg-amber-500 text-amber-950 rounded-xl font-bold hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Vitória -->
+    <div id="victory-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-modal-backdrop"></div>
+        <div class="relative bg-white rounded-[40px] shadow-2xl p-10 max-w-md w-full text-center animate-modal-content">
+            <div
+                class="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-amber-400 rounded-3xl flex items-center justify-center shadow-2xl rotate-12">
+                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                    stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+                    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                    <path d="M4 22h16" />
+                    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+                    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+                    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+                </svg>
+            </div>
+            <div class="mt-8 mb-8">
+                <h2 class="text-4xl font-black text-slate-800 mb-2">Fantástico!</h2>
+                <p class="text-amber-500 font-black tracking-widest uppercase">Rainha da Colmeia</p>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mb-10">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Pontos</p>
+                    <p id="victory-score" class="text-2xl font-black text-slate-800">0</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    <p class="text-slate-400 text-xs font-bold uppercase mb-1">Palavras</p>
+                    <p id="victory-words" class="text-2xl font-black text-slate-800">0</p>
+                </div>
+            </div>
+            <button onclick="executeNewGame()"
+                class="w-full py-5 bg-amber-500 text-amber-950 rounded-2xl font-black text-lg hover:bg-amber-600 transition-all shadow-xl shadow-amber-500/30 active:scale-95 flex items-center justify-center gap-3">
+                Novo Jogo
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14" />
+                    <path d="m12 5 7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Script Principal da Engine -->
+    <script>
+        // ============================================================================
+        // 1. DADOS E ESTADO GLOBAL
+        // ============================================================================
+        const MODES = {
+            classic: { id: 'classic', label: 'Clássico', minLength: 4, getDict: () => DICTIONARY },
+            pokemon: { id: 'pokemon', label: 'Pokémon', minLength: 3, getDict: () => POKEMON },
+            harrypotter: { id: 'harrypotter', label: 'Harry Potter', minLength: 3, getDict: () => HARRYPOTTER },
+        };
+        let currentMode = MODES.classic;
+        let gameState = null;
+        let inputStr = '';
+        let foundWords = [];
+        let isFading = false;
+        let messageTimeout = null;
+        let currentScore = 0;
+        let maxScore = 0;
+
+        // Ranks baseados na porcentagem da pontuação máxima
+        const RANKS = [
+            { threshold: 0, name: "Iniciante" },
+            { threshold: 0.05, name: "Bom" },
+            { threshold: 0.15, name: "Muito Bom" },
+            { threshold: 0.25, name: "Excelente" },
+            { threshold: 0.50, name: "Genial" },
+            { threshold: 1.0, name: "Rainha" }
+        ];
+
+        // ============================================================================
+        // 2. FUNÇÕES ÚTEIS E LÓGICA DO JOGO
+        // ============================================================================
+
+        const removeAccents = (str) => str.normalize('NFD').replace(/[\u0300-\u0326\u0328-\u036f]/g, '').normalize('NFC').toUpperCase();
+        const getUniqueLetters = (word) => Array.from(new Set(removeAccents(word).split('')));
+        const isPangram = (word) => new Set(removeAccents(word).split('')).size === 7;
+
+        const findPangrams = (db) => db.filter(word => getUniqueLetters(word).length === 7);
+
+        const calculateMaxScore = (words) => {
+            return words.reduce((total, word) => {
+                const cleanWord = removeAccents(word);
+                const isPang = new Set(cleanWord.split('')).size === 7;
+                return total + (isPang ? cleanWord.length + 7 : (cleanWord.length === 4 ? 1 : cleanWord.length));
+            }, 0);
+        };
+
+        const generateGameFromDB = (db, minLength = 4) => {
+            const seen = new Set();
+            const uniqueDb = db.filter(word => {
+                const clean = removeAccents(word);
+                if (seen.has(clean)) return false;
+                seen.add(clean);
+                return true;
+            });
+
+            const pangrams = findPangrams(uniqueDb);
+            if (pangrams.length === 0) return null;
+
+            const seedWord = pangrams[Math.floor(Math.random() * pangrams.length)];
+            const uniqueLetters = getUniqueLetters(seedWord);
+
+            const center = uniqueLetters[Math.floor(Math.random() * uniqueLetters.length)];
+            const surround = uniqueLetters.filter(l => l !== center);
+
+            const validWords = uniqueDb.filter(word => {
+                const cleanWord = removeAccents(word);
+                if (cleanWord.length < minLength) return false;
+                if (!cleanWord.includes(center)) return false;
+                for (let char of cleanWord) {
+                    if (!uniqueLetters.includes(char)) return false;
+                }
+                return true;
+            });
+
+            return { center, surround, words: validWords, seed: seedWord };
+        };
+
+        const shuffleArray = (array) => {
+            const newArr = [...array];
+            for (let i = newArr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+            }
+            return newArr;
+        };
+
+        // ============================================================================
+        // 3. MANIPULA�!ÒO DA INTERFACE (DOM)
+        // ============================================================================
+
+        const getRankName = (score, max) => {
+            const percentage = max === 0 ? 0 : score / max;
+            let currentRank = RANKS[0].name;
+            for (let rank of RANKS) {
+                if (percentage >= rank.threshold) {
+                    currentRank = rank.name;
+                }
+            }
+            return currentRank;
+        };
+
+        const updateHeader = () => {
+
+            currentScore = foundWords.reduce((total, word) => {
+                const cleanWord = removeAccents(word);
+                const isPang = new Set(cleanWord.split('')).size === 7;
+                return total + (isPang ? cleanWord.length + 7 : (cleanWord.length === 4 ? 1 : cleanWord.length));
+            }, 0);
+
+            document.getElementById('score-display').innerText = currentScore;
+            document.getElementById('progress-count').innerText = foundWords.length;
+            document.getElementById('total-words-count').innerText = gameState.words.length;
+
+            // Atualiza barra de progresso (desktop)
+            const fillPercentage = maxScore === 0 ? 0 : (currentScore / maxScore) * 100;
+            document.getElementById('progress-bar-fill').style.width = `${fillPercentage}%`;
+
+            // Atualiza o Rank (desktop)
+            const rankName = getRankName(currentScore, maxScore);
+            document.getElementById('rank-display').innerText = rankName;
+
+            // Sincroniza elementos mobile
+            document.getElementById('score-display-mobile').innerText = currentScore;
+            document.getElementById('progress-bar-fill-mobile').style.width = `${fillPercentage}%`;
+            document.getElementById('rank-display-mobile').innerText = rankName;
+        };
+
+        const updateInputDisplay = () => {
+            const container = document.getElementById('input-container');
+            container.innerHTML = '';
+
+            if (inputStr.length === 0) {
+                container.innerHTML = `<span class="text-slate-300 font-medium text-lg tracking-normal">Forme a palavra...</span>`;
+            } else {
+                inputStr.split('').forEach(char => {
+                    const span = document.createElement('span');
+                    span.innerText = char;
+                    span.className = char === gameState.center ? 'text-amber-500' : 'text-slate-800';
+                    container.appendChild(span);
+                });
+            }
+
+            const cursor = document.createElement('span');
+            cursor.className = 'w-[3px] h-8 sm:h-10 bg-amber-400 ml-1 rounded-full animate-pulse';
+            container.appendChild(cursor);
+        };
+
+        const updateHoneycomb = () => {
+            document.getElementById('btn-center').innerText = gameState.center;
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`btn-surround-${i}`).innerText = gameState.surround[i];
+            }
+        };
+
+        // Controla quais grupos estão com palavras reveladas
+        const revealedGroups = new Set();
+
+        window.toggleGroupReveal = (len) => {
+            if (revealedGroups.has(len)) {
+                revealedGroups.delete(len);
+            } else {
+                revealedGroups.add(len);
+            }
+            updateWordList();
+        };
+
+        const updateWordList = () => {
+            const container = document.getElementById('word-list-container');
+            container.innerHTML = '';
+
+            // Agrupar palavras por tamanho
+            const groups = {};
+            gameState.words.forEach(word => {
+                const len = removeAccents(word).length;
+                if (!groups[len]) groups[len] = [];
+                groups[len].push(word);
+            });
+
+            // Ordenar chaves
+            const sortedKeys = Object.keys(groups).sort((a, b) => Number(a) - Number(b));
+
+            sortedKeys.forEach(len => {
+                const wordsOfThisLen = groups[len].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+                const foundInGroup = wordsOfThisLen.filter(w => foundWords.includes(w)).length;
+                const isRevealed = revealedGroups.has(len);
+
+                const eyeIcon = isRevealed
+                    ? `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+                    : `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+                const eyeBtnClass = isRevealed
+                    ? 'flex items-center justify-center w-6 h-6 rounded-md bg-amber-100 text-amber-600 hover:bg-amber-200 transition-all'
+                    : 'flex items-center justify-center w-6 h-6 rounded-md bg-slate-100 text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-all';
+
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'bg-white rounded-2xl p-4 border border-slate-100 shadow-sm';
+
+                let html = `
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-slate-700 flex items-center gap-2">
+              <span class="bg-amber-100 text-amber-800 w-7 h-7 flex items-center justify-center rounded-lg text-sm shadow-sm">${len}</span>
+              Letras
+              <button class="${eyeBtnClass}" onclick="toggleGroupReveal('${len}')" title="${isRevealed ? 'Esconder palavras' : 'Revelar palavras'}">
+                ${eyeIcon}
+              </button>
+            </h3>
+            <span class="text-sm font-bold text-slate-400">${foundInGroup} / ${wordsOfThisLen.length}</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 sm:gap-3">
+        `;
+
+                wordsOfThisLen.forEach(word => {
+                    const isFound = foundWords.includes(word);
+                    const cleanWord = removeAccents(word);
+                    const pangramClass = isPangram(word) ? 'bg-amber-400 border-amber-500 text-amber-950 shadow-sm' : 'bg-slate-800 border-slate-800 text-white shadow-sm';
+                    const revealedClass = 'bg-slate-100 border-slate-300 text-slate-500 border-dashed';
+                    const notFoundClass = 'bg-slate-50 border-dashed border-slate-300 text-slate-300';
+
+                    let boxClass, displayText;
+                    if (isFound) {
+                        boxClass = `py-2 px-1 rounded-xl text-[13px] sm:text-sm font-black tracking-widest transition-all duration-300 flex items-center justify-center border-2 text-center overflow-hidden uppercase ${pangramClass}`;
+                        displayText = word;
+                    } else if (isRevealed) {
+                        boxClass = `py-2 px-1 rounded-xl text-[13px] sm:text-sm font-black tracking-widest transition-all duration-300 flex items-center justify-center border-2 text-center overflow-hidden uppercase ${revealedClass}`;
+                        displayText = word;
+                    } else {
+                        boxClass = `py-2 px-1 rounded-xl text-[13px] sm:text-sm font-black tracking-widest transition-all duration-300 flex items-center justify-center border-2 text-center overflow-hidden uppercase ${notFoundClass}`;
+                        displayText = '_ '.repeat(cleanWord.length).trim();
+                    }
+
+                    html += `<div class="${boxClass}">${displayText}</div>`;
+                });
+
+                html += `</div>`;
+                groupDiv.innerHTML = html;
+                container.appendChild(groupDiv);
+            });
+        };
+
+
+        const showMessage = (text, type = 'info') => {
+            const toast = document.getElementById('toast-message');
+            toast.innerText = text;
+
+            toast.className = 'px-6 py-2 rounded-full text-sm font-bold shadow-lg transition-all animate-bounce text-white ' +
+                (type === 'error' ? 'bg-slate-800' : type === 'success' ? 'bg-amber-500 text-amber-950' : 'bg-blue-500');
+
+            toast.classList.remove('hidden');
+
+            if (messageTimeout) clearTimeout(messageTimeout);
+            messageTimeout = setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
+        };
+
+        const triggerShake = () => {
+            const inputContainer = document.getElementById('input-container');
+            inputContainer.classList.add('animate-shake');
+            setTimeout(() => inputContainer.classList.remove('animate-shake'), 500);
+        };
+
+        const openRulesModal = () => {
+            // Update min-length text dynamically based on current mode
+            const minLen = currentMode ? currentMode.minLength : 4;
+            const el = document.getElementById('rules-min-length');
+            if (el) el.innerHTML = `As palavras devem ter no mínimo <strong class="text-slate-800">${minLen} letras</strong>.`;
+            document.getElementById('rules-modal').classList.remove('hidden');
+        };
+
+        const closeRulesModal = () => {
+            document.getElementById('rules-modal').classList.add('hidden');
+        };
+
+        // ============================================================================
+        // 4. A�!�"ES DO USUÁRIO
+        // ============================================================================
+
+        const handleTap = (char) => {
+            inputStr += char;
+            updateInputDisplay();
+        };
+
+        const handleDelete = () => {
+            inputStr = inputStr.slice(0, -1);
+            updateInputDisplay();
+        };
+
+        const handleShuffle = () => {
+            if (isFading || !gameState) return;
+            isFading = true;
+
+            const btns = [];
+            for (let i = 0; i < 6; i++) btns.push(document.getElementById(`btn-surround-${i}`));
+
+            // Animação CSS fade out
+            btns.forEach(btn => btn.classList.add('fade-out-scale'));
+
+            setTimeout(() => {
+                gameState.surround = shuffleArray(gameState.surround);
+                updateHoneycomb();
+                // Animação CSS fade in
+                btns.forEach(btn => btn.classList.remove('fade-out-scale'));
+                isFading = false;
+            }, 300);
+        };
+
+        const handleNewGame = () => {
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        };
+
+        const closeConfirmModal = () => {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        };
+
+        const executeNewGame = () => {
+            closeConfirmModal();
+            document.getElementById('victory-modal').classList.add('hidden');
+
+            gameState = generateGameFromDB(currentMode.getDict(), currentMode.minLength);
+            if (!gameState) { alert('Não foi possível gerar um jogo com este dicionário.'); return; }
+            maxScore = calculateMaxScore(gameState.words);
+            inputStr = '';
+            foundWords = [];
+            revealedGroups.clear();
+            updateHeader();
+            updateHoneycomb();
+            updateInputDisplay();
+            updateWordList();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        // Validação de palavra mínima por modo
+        window._getMinLength = () => currentMode.minLength;
+
+        const goToMenu = () => {
+            const app = document.getElementById('app-content');
+            const menu = document.getElementById('menu-screen');
+            app.classList.add('anim-slide-out-right');
+            setTimeout(() => {
+                app.classList.add('hidden');
+                app.classList.remove('anim-slide-out-right');
+                menu.classList.remove('hidden');
+                menu.classList.add('flex', 'anim-slide-in-left');
+                setTimeout(() => menu.classList.remove('anim-slide-in-left'), 350);
+            }, 220);
+        };
+
+        const startGame = (modeId) => {
+            currentMode = MODES[modeId] || MODES.classic;
+            const menu = document.getElementById('menu-screen');
+            const app = document.getElementById('app-content');
+            menu.classList.add('anim-slide-out-left');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex', 'anim-slide-out-left');
+                app.classList.remove('hidden');
+                app.classList.add('anim-slide-in-right');
+                document.getElementById('mode-label').innerText = currentMode.label;
+                const dl = document.getElementById('mode-label-desktop');
+                if (dl) dl.innerText = currentMode.label;
+                executeNewGame();
+                setTimeout(() => app.classList.remove('anim-slide-in-right'), 350);
+            }, 220);
+        };
+
+        window.toggleThemeMenu = () => {
+            const m = document.getElementById('theme-menu');
+            const c = document.getElementById('theme-chevron');
+            if (m.classList.contains('hidden')) {
+                // Abrir — deslizar para baixo
+                m.classList.remove('hidden', 'anim-slide-up');
+                m.classList.add('anim-slide-down');
+                c.style.transform = 'rotate(180deg)';
+            } else {
+                // Fechar — deslizar para cima
+                m.classList.remove('anim-slide-down');
+                m.classList.add('anim-slide-up');
+                c.style.transform = '';
+                setTimeout(() => {
+                    m.classList.add('hidden');
+                    m.classList.remove('anim-slide-up');
+                }, 220);
+            }
+        };
+
+        const validateWord = () => {
+            if (inputStr.length === 0 || !gameState) return;
+            const minLen = currentMode.minLength;
+
+            if (inputStr.length < minLen) {
+                showMessage(`Muito curta! Mínimo de ${minLen} letras.`, 'error');
+                triggerShake();
+                return;
+            }
+
+            if (!inputStr.includes(gameState.center)) {
+                showMessage(`Falta a letra central (${gameState.center})!`, 'error');
+                triggerShake();
+                return;
+            }
+
+            const matchedWord = gameState.words.find(w => removeAccents(w) === inputStr);
+
+            if (!matchedWord) {
+                showMessage('Palavra não encontrada.', 'error');
+                triggerShake();
+                return;
+            }
+
+            if (foundWords.includes(matchedWord)) {
+                showMessage('Você já encontrou essa!', 'error');
+                triggerShake();
+                return;
+            }
+
+            foundWords.push(matchedWord);
+            inputStr = '';
+
+            updateInputDisplay();
+            updateHeader();
+            updateWordList();
+
+            if (foundWords.length === gameState.words.length) {
+                setTimeout(() => {
+                    document.getElementById('victory-score').innerText = currentScore;
+                    document.getElementById('victory-words').innerText = foundWords.length;
+                    document.getElementById('victory-modal').classList.remove('hidden');
+                }, 500);
+            } else {
+                showMessage(isPangram(matchedWord) ? '⭐ PANGRAMA! ⭐' : 'Palavra Correta!', 'success');
+            }
+        };
+
+        // Teclado físico
+        window.addEventListener('keydown', (e) => {
+            if (!gameState) return;
+            const char = e.key.toUpperCase();
+            if (e.key === 'Backspace') {
+                handleDelete();
+            } else if (e.key === 'Enter') {
+                validateWord();
+            } else if (/^[A-Z�!]$/.test(char)) {
+                const normalizedChar = removeAccents(char);
+                if (normalizedChar === gameState.center || gameState.surround.includes(normalizedChar)) {
+                    handleTap(normalizedChar);
+                }
+            }
+        });
+
+        // ============================================================================
+        // 5. INICIALIZA�!ÒO
+        // ============================================================================
+
+        const initGame = () => {
+            document.getElementById('loading-screen').classList.add('hidden');
+
+            if (typeof DICTIONARY !== 'undefined' && DICTIONARY.length > 0) {
+                // Mostra o menu inicial
+                document.getElementById('menu-screen').classList.remove('hidden');
+                document.getElementById('menu-screen').classList.add('flex');
+            } else {
+                document.getElementById('error-screen').innerHTML = '<div class="p-10 text-center font-bold text-red-500">Erro: dicionario.js não carregado corretamente.</div>';
+                document.getElementById('error-screen').classList.remove('hidden');
+            }
+        };
+
+        // Inicia o jogo quando o DOM carregar
+        window.addEventListener('DOMContentLoaded', () => {
+            // Restaurar preferência de tema
+            const savedTheme = localStorage.getItem('colmeia-theme') || 'light';
+            applyTheme(savedTheme);
+            setTimeout(initGame, 500);
+        });
+
+        const applyTheme = (theme) => {
+            const isDark = theme === 'dark';
+            document.documentElement.classList.toggle('dark', isDark);
+            // Ícones mobile
+            document.getElementById('icon-sun-mobile')?.classList.toggle('hidden', isDark);
+            document.getElementById('icon-moon-mobile')?.classList.toggle('hidden', !isDark);
+            // Ícones desktop
+            document.getElementById('icon-sun-desktop')?.classList.toggle('hidden', isDark);
+            document.getElementById('icon-moon-desktop')?.classList.toggle('hidden', !isDark);
+            localStorage.setItem('colmeia-theme', theme);
+        };
+
+        const toggleTheme = () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            applyTheme(isDark ? 'light' : 'dark');
+        };
+
+    </script>
+</body>
+
+</html>
