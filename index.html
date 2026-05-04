@@ -167,7 +167,7 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
-                max-height: 200px;
+                max-height: 500px;
             }
         }
 
@@ -197,7 +197,7 @@
             from {
                 opacity: 1;
                 transform: translateY(0);
-                max-height: 200px;
+                max-height: 500px;
             }
 
             to {
@@ -442,7 +442,7 @@
 
     <!-- Tela de Menu Inicial -->
     <div id="menu-screen"
-        class="hidden relative overflow-hidden min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-50 to-slate-100">
+        class="hidden relative overflow-x-hidden overflow-y-auto min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-50 to-slate-100">
 
         <!-- Fundo animado do menu -->
         <div aria-hidden="true" class="absolute inset-0 pointer-events-none">
@@ -487,6 +487,18 @@
                     <button onclick="startGame('harrypotter')"
                         class="w-full py-4 bg-white border-2 border-slate-200 text-slate-800 rounded-2xl font-bold text-lg hover:border-amber-400 hover:bg-amber-50 active:scale-95 transition-all">
                         ⚗️ Harry Potter
+                    </button>
+                    <button onclick="startGame('marvel')"
+                        class="w-full py-4 bg-white border-2 border-slate-200 text-slate-800 rounded-2xl font-bold text-lg hover:border-amber-400 hover:bg-amber-50 active:scale-95 transition-all">
+                        🚀 Marvel
+                    </button>
+                    <button onclick="startGame('starwars')"
+                        class="w-full py-4 bg-white border-2 border-slate-200 text-slate-800 rounded-2xl font-bold text-lg hover:border-amber-400 hover:bg-amber-50 active:scale-95 transition-all">
+                        ⚔️ Star Wars
+                    </button>
+                    <button onclick="startGame('saude')"
+                        class="w-full py-4 bg-white border-2 border-slate-200 text-slate-800 rounded-2xl font-bold text-lg hover:border-amber-400 hover:bg-amber-50 active:scale-95 transition-all">
+                        🏥 Saúde
                     </button>
                 </div>
             </div>
@@ -899,6 +911,9 @@
             classic: { id: 'classic', label: 'Clássico', minLength: 4, getDict: () => DICTIONARY },
             pokemon: { id: 'pokemon', label: 'Pokémon', minLength: 3, getDict: () => POKEMON },
             harrypotter: { id: 'harrypotter', label: 'Harry Potter', minLength: 3, getDict: () => HARRYPOTTER },
+            marvel: { id: 'marvel', label: 'Marvel', minLength: 3, getDict: () => MARVEL },
+            starwars: { id: 'starwars', label: 'Star Wars', minLength: 3, getDict: () => STARWARS },
+            saude: { id: 'saude', label: 'Saúde', minLength: 3, getDict: () => SAUDE },
         };
         let currentMode = MODES.classic;
         let gameState = null;
